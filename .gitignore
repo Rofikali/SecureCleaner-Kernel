@@ -1,0 +1,28 @@
+# --- Python Environment ---
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+env/
+venv/
+.env
+
+# --- PyInstaller / Build Artifacts ---
+build/
+dist/
+*.spec
+*.exe
+
+# --- SecureCleaner Local Data (DO NOT PUBLICLY SHARE) ---
+default.json
+security_logs.log
+cleanup_audit.log
+logs_archive/
+random_files/
+testing/
+
+# --- IDE & OS ---
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

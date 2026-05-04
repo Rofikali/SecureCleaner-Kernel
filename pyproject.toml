@@ -1,0 +1,28 @@
+[project]
+name = "secure-cleaner-kernel"
+version = "1.0.0"
+description = "A CISSP-hardened automated file organization system."
+dependencies = [
+    "pillow>=12.2.0",
+    "plyer>=2.1.0",
+    "pydantic>=2.13.3",
+    "pyinstaller>=6.20.0",
+    "pystray>=0.19.5",
+    "pytest>=9.0.3",
+    "watchdog>=6.0.0",
+    "pytest==9.0.3",
+]
+
+[tool.black]
+line-length = 88
+target-version = ['py313']
+include = '\.pyi?$'
+
+[tool.ruff]
+line-length = 88
+target-version = "py313"
+select = ["E", "F", "I"] # Error, Fix, Import sorting
+fix = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

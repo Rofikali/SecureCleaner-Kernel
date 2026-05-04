@@ -1,0 +1,7 @@
+watchdog
+pydantic
+pystray
+pillow
+plyer
+black
+ruff
