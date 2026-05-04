@@ -1,6 +1,7 @@
-from watchdog.events import FileSystemEventHandler
 import os
 import shutil
+
+from watchdog.events import FileSystemEventHandler
 
 
 class FileDropHandler(FileSystemEventHandler):

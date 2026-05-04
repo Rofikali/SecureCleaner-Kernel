@@ -1,12 +1,13 @@
-import pystray
-from PIL import Image, ImageDraw
-from utils.metrics import metrics
-from ui.dialogs import SecurityDialogs
 import os
-import time
 import sys
 import threading
+import time
+
+import pystray
+from PIL import Image, ImageDraw
+
 from utils.logger import app_logger
+from utils.metrics import metrics
 
 
 def get_resource_path(relative_path):
@@ -47,11 +48,9 @@ class TrayIconManager:
 
     def view_audit_log(self, icon, item):
         """L6 Absolute Path Resolution for EXE."""
-        from utils.security import audit_log_path, SecurityGuard
+        from utils.security import SecurityGuard, audit_log_path
 
-        if SecurityGuard.verify_password(
-            self.kernel.config.admin_password, "View Security Logs"
-        ):
+        if SecurityGuard.verify_password(self.kernel.config.admin_password, "View Security Logs"):
             if os.path.exists(audit_log_path):
                 # Using 'start' via shell to handle Windows file associations
                 os.startfile(audit_log_path)
@@ -66,9 +65,7 @@ class TrayIconManager:
         def task():
             from utils.security import SecurityGuard
 
-            if SecurityGuard.verify_password(
-                self.kernel.config.admin_password, "Change Schedule"
-            ):
+            if SecurityGuard.verify_password(self.kernel.config.admin_password, "Change Schedule"):
                 # Call the picker through the UI layer
                 from ui.dialogs import SecurityDialogs
 
@@ -83,9 +80,7 @@ class TrayIconManager:
         from ui.monitor import LiveConsole
         from utils.security import SecurityGuard
 
-        if SecurityGuard.verify_password(
-            self.kernel.config.admin_password, "Open Live Console"
-        ):
+        if SecurityGuard.verify_password(self.kernel.config.admin_password, "Open Live Console"):
             threading.Thread(target=LiveConsole.open, daemon=True).start()
 
     def handle_exit(self, icon, item):
@@ -97,9 +92,7 @@ class TrayIconManager:
             time.sleep(0.1)
             os._exit(0)
         else:
-            SecurityGuard._write_audit(
-                30, "SYSTEM_EXIT_DENIED: Unauthorized attempt to quit."
-            )
+            SecurityGuard._write_audit(30, "SYSTEM_EXIT_DENIED: Unauthorized attempt to quit.")
 
     def setup(self):
         """Constructs the Tray Menu using the Facade Pattern."""
@@ -107,10 +100,7 @@ class TrayIconManager:
         def get_history_menu():
             if not metrics.history:
                 return [pystray.MenuItem("No activity", lambda: None, enabled=False)]
-            return [
-                pystray.MenuItem(item, lambda: None, enabled=False)
-                for item in metrics.history
-            ]
+            return [pystray.MenuItem(item, lambda: None, enabled=False) for item in metrics.history]
 
         # 1. Define the Menu Structure (The "Iterable" pystray needs)
         main_menu = pystray.Menu(
@@ -130,19 +120,13 @@ class TrayIconManager:
                 checked=lambda item: metrics.silent_mode,
             ),
             pystray.Menu.SEPARATOR,
-            pystray.MenuItem(
-                "Recent Activity", pystray.Menu(lambda: get_history_menu())
-            ),
+            pystray.MenuItem("Recent Activity", pystray.Menu(lambda: get_history_menu())),
             pystray.MenuItem("Set Schedule Time", self.change_time_action),
             pystray.MenuItem("Open Watch Folder", lambda: self.kernel.open_folder()),
-            pystray.MenuItem(
-                "Change Watch Folder", lambda: self.kernel.request_change_folder()
-            ),
+            pystray.MenuItem("Change Watch Folder", lambda: self.kernel.request_change_folder()),
             pystray.Menu.SEPARATOR,
             pystray.MenuItem("Live Kernel Monitor", self.open_live_console),
-            pystray.MenuItem(
-                "Clear All Logs", lambda: self.kernel.request_clear_logs()
-            ),
+            pystray.MenuItem("Clear All Logs", lambda: self.kernel.request_clear_logs()),
             pystray.MenuItem("View Security Logs (Text)", self.view_audit_log),
             pystray.Menu.SEPARATOR,
             pystray.MenuItem("Quit", self.handle_exit),

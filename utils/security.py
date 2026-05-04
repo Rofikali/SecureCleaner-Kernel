@@ -1,10 +1,10 @@
+import logging
 import os
 import sys
-import logging
-import tkinter as tk
-from tkinter import simpledialog, messagebox
 import time
+import tkinter as tk
 from logging.handlers import RotatingFileHandler
+from tkinter import messagebox, simpledialog
 
 
 def get_base_path():
@@ -31,9 +31,7 @@ if not audit_logger.handlers:
     )
 
     # Standardised CISSP Log Format: Time | Level | Message
-    audit_handler.setFormatter(
-        logging.Formatter("%(asctime)s | %(levelname)s | %(message)s")
-    )
+    audit_handler.setFormatter(logging.Formatter("%(asctime)s | %(levelname)s | %(message)s"))
     audit_logger.addHandler(audit_handler)
 
 
@@ -106,9 +104,7 @@ class SecurityGuard:
 
         # 5. FAILURE CASE (Audited with Linear Backoff Counter)
         SecurityGuard.FAILED_ATTEMPTS += 1
-        level = (
-            logging.WARNING if SecurityGuard.FAILED_ATTEMPTS < 3 else logging.CRITICAL
-        )
+        level = logging.WARNING if SecurityGuard.FAILED_ATTEMPTS < 3 else logging.CRITICAL
 
         log_msg = f"AUTH_FAILURE: Attempt #{SecurityGuard.FAILED_ATTEMPTS} for '{action_name}'"
         SecurityGuard._write_audit(level, log_msg)
@@ -120,9 +116,7 @@ class SecurityGuard:
                 logging.CRITICAL,
                 f"SYSTEM_LOCKOUT: 60s freeze triggered by '{action_name}'",
             )
-            messagebox.showwarning(
-                "Security Alert", "3 Failed attempts. System locked for 60s."
-            )
+            messagebox.showwarning("Security Alert", "3 Failed attempts. System locked for 60s.")
         else:
             messagebox.showerror("Denied", "Incorrect Credentials.")
 

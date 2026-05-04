@@ -1,7 +1,8 @@
-import tkinter as tk
 import os
-from utils.security import audit_log_path
+import tkinter as tk
+
 from utils.logger import log_file_path
+from utils.security import audit_log_path
 
 
 class LiveConsole:

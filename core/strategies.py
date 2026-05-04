@@ -1,5 +1,5 @@
-from abc import ABC, abstractmethod
 import os
+from abc import ABC, abstractmethod
 
 
 class SortingStrategy(ABC):
@@ -13,7 +13,6 @@ class ExtensionStrategy:
         self.mappings = mappings
 
     def get_folder(self, filename):
-        import os
 
         ext = os.path.splitext(filename)[1].lower()
         for folder, extensions in self.mappings.items():

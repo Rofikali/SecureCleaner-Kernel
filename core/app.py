@@ -1,20 +1,21 @@
-import os
-import sys
-import threading
 import json
-import time
-from datetime import datetime
-from watchdog.observers import Observer
-from ui.tray import TrayIconManager
-from ui.dialogs import SecurityDialogs
-from core.engine import CleanHandler
-from core.strategies import ExtensionStrategy
-from utils.logger import app_logger
-from utils.notifier import send_notification
-from utils.security import SecurityGuard, audit_log_path
-from utils.logger import log_file_path
+import os
 import shutil
 import subprocess
+import sys
+import threading
+import time
+from datetime import datetime
+
+from watchdog.observers import Observer
+
+from core.engine import CleanHandler
+from core.strategies import ExtensionStrategy
+from ui.dialogs import SecurityDialogs
+from ui.tray import TrayIconManager
+from utils.logger import app_logger, log_file_path
+from utils.notifier import send_notification
+from utils.security import SecurityGuard, audit_log_path
 
 
 class CleanerApp:
@@ -38,9 +39,7 @@ class CleanerApp:
         observer_thread.start()
 
         # 2. Start Schedule Heartbeat Thread
-        schedule_thread = threading.Thread(
-            target=self._run_schedule_checker, daemon=True
-        )
+        schedule_thread = threading.Thread(target=self._run_schedule_checker, daemon=True)
         schedule_thread.start()
 
         # 3. Start UI
@@ -66,7 +65,8 @@ class CleanerApp:
                 # Log a "Pending" status every hour so we know it's alive
                 if now.minute == 0 and now.second < 30:
                     app_logger.info(
-                        f"STATUS: Waiting for scheduled time ({self.config.scheduled_hour}:00). Current: {now.hour}:00"
+                        f"STATUS: Waiting for scheduled time ({self.config.scheduled_hour}:00). "
+                        f"Current: {now.hour}:00"
                     )
 
                 if now.hour == self.config.scheduled_hour and now.minute == 0:
@@ -78,9 +78,7 @@ class CleanerApp:
     def request_clear_logs(self):
         """L6 Kernel Archive: Moves current logs to an archive folder instead of deleting."""
 
-        if SecurityGuard.verify_password(
-            self.config.admin_password, "Archive & Clear Logs"
-        ):
+        if SecurityGuard.verify_password(self.config.admin_password, "Archive & Clear Logs"):
             import logging
             from datetime import datetime
 
@@ -97,9 +95,7 @@ class CleanerApp:
                 for path in [log_file_path, audit_log_path]:
                     if os.path.exists(path):
                         filename = os.path.basename(path)
-                        archive_path = os.path.join(
-                            archive_dir, f"{timestamp}_{filename}"
-                        )
+                        archive_path = os.path.join(archive_dir, f"{timestamp}_{filename}")
                         shutil.move(path, archive_path)
 
                 # 4. Inform and Restart using the "Clean" method
@@ -180,9 +176,7 @@ class CleanerApp:
             if new_hour is not None:
                 self.save_config_field("scheduled_hour", new_hour)
 
-                send_notification(
-                    "Schedule Updated", f"Daily clean set to {new_hour}:00"
-                )
+                send_notification("Schedule Updated", f"Daily clean set to {new_hour}:00")
 
                 # If we are in scheduled mode, restart to sync the heartbeat thread
                 if not self.config.real_time_mode:

@@ -3,11 +3,11 @@
 # FILE CHAOS GENERATOR (L10++ STYLE)
 # ==========================================
 
+import argparse
 import os
-import sys
 import random
 import string
-import argparse
+import sys
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from threading import Lock
@@ -133,12 +133,8 @@ def main():
     parser.add_argument("--ext", type=int, default=3, help="Total extensions")
     parser.add_argument("--threads", type=int, default=8, help="Threads")
     parser.add_argument("--min", type=int, default=1024, help="Min file size (bytes)")
-    parser.add_argument(
-        "--max", type=int, default=1024 * 50, help="Max file size (bytes)"
-    )
-    parser.add_argument(
-        "--tree", action="store_true", help="Enable directory tree mode"
-    )
+    parser.add_argument("--max", type=int, default=1024 * 50, help="Max file size (bytes)")
+    parser.add_argument("--tree", action="store_true", help="Enable directory tree mode")
 
     args = parser.parse_args()
 
@@ -156,9 +152,7 @@ def main():
 
     print("[INFO] Starting generation...")
     print(f"[INFO] Directory: {base_dir}")
-    print(
-        f"[INFO] Files: {args.files}, Extensions: {args.ext}, Threads: {args.threads}"
-    )
+    print(f"[INFO] Files: {args.files}, Extensions: {args.ext}, Threads: {args.threads}")
 
     # Start progress monitor
     from threading import Thread
@@ -168,9 +162,7 @@ def main():
 
     with ThreadPoolExecutor(max_workers=args.threads) as executor:
         for batch in tasks:
-            executor.submit(
-                worker, batch, base_dir, ext_list, args.min, args.max, args.tree
-            )
+            executor.submit(worker, batch, base_dir, ext_list, args.min, args.max, args.tree)
 
     monitor_thread.join()
 

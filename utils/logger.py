@@ -23,7 +23,7 @@ def setup_logger():
             self.flush()
             try:
                 os.fsync(self.stream.fileno())
-            except:
+            except Exception:
                 pass
 
     formatter = logging.Formatter("%(asctime)s | %(levelname)s | %(message)s")
@@ -40,4 +40,3 @@ def setup_logger():
 
 
 app_logger = setup_logger()
-

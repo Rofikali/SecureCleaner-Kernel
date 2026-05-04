@@ -1,7 +1,9 @@
 import os
 import shutil
 import time
+
 from watchdog.events import FileSystemEventHandler
+
 from utils.logger import app_logger
 from utils.metrics import metrics
 from utils.naming import get_unique_path
@@ -134,9 +136,7 @@ class CleanHandler(FileSystemEventHandler):
         try:
             if not os.listdir(current_dir):
                 os.rmdir(current_dir)
-                app_logger.info(
-                    f"CLEANUP: Removed empty folder {os.path.basename(current_dir)}"
-                )
+                app_logger.info(f"CLEANUP: Removed empty folder {os.path.basename(current_dir)}")
                 # Check parent
                 self._cleanup_empty_folders(os.path.dirname(current_dir))
         except Exception:

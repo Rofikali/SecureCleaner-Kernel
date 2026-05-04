@@ -1,6 +1,7 @@
+import json
 import os
 import sys
-import json
+
 from core.app import CleanerApp
 from utils.config_schema import AppConfig
 from utils.logger import app_logger
